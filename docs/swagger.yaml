@@ -1,0 +1,181 @@
+basePath: /
+definitions:
+  models.RealProperty:
+    properties:
+      address:
+        type: string
+      area:
+        minimum: 0
+        type: number
+      description:
+        type: string
+      id:
+        type: integer
+      price:
+        type: number
+      property_type:
+        type: string
+      property_type_id:
+        type: integer
+      rooms:
+        minimum: 1
+        type: integer
+    required:
+    - address
+    - area
+    - price
+    - property_type
+    - property_type_id
+    - rooms
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: API Server for TodoList Application
+  title: RAMS-app
+  version: "1.0"
+paths:
+  /real_property:
+    get:
+      consumes:
+      - application/json
+      description: Получение список недвижимости.
+      operationId: get-list-real-property
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.RealProperty'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+        default:
+          description: ""
+          schema:
+            additionalProperties: true
+            type: object
+      summary: GetList real property
+      tags:
+      - real_property(недвижимость)
+    post:
+      consumes:
+      - application/json
+      description: Создание недвижимости.
+      operationId: create-real-property
+      parameters:
+      - description: информация о недвижимости
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/models.RealProperty'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: При успешном выполнении возврашает created!
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+        default:
+          description: ""
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Create real property
+      tags:
+      - real_property(недвижимость)
+  /real_property/:id:
+    get:
+      consumes:
+      - application/json
+      description: Получение недвижимость по идентификатору.
+      operationId: get-by-id-real-property
+      parameters:
+      - description: идентификатор недвижимости
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.RealProperty'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+        default:
+          description: ""
+          schema:
+            additionalProperties: true
+            type: object
+      summary: GetByID real property
+      tags:
+      - real_property(недвижимость)
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

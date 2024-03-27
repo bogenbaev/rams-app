@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres
+    container_name: postgres-container
+    ports:
+      - "127.0.0.1:5432:5432"
+    environment:
+      POSTGRES_PASSWORD: test1234
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+volumes:
+  postgres_data:
