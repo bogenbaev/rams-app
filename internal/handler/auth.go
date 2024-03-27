@@ -13,7 +13,7 @@ type signInInput struct {
 }
 
 // @Summary	CreateNewUser
-// @Description	`Регистрация пользователя в систему.`
+// @Description	`Регистрация пользователя в системе.`
 // @Tags		Auth
 // @VendorCode	create account
 // @ID			create-account
@@ -43,7 +43,7 @@ func (h *Handler) SignUp(ctx *gin.Context) {
 }
 
 // @Summary	login user
-// @Description	`Аутентификация пользователя в систему.`
+// @Description	`Аутентификация пользователя в системе.`
 // @Description	`После успешной аутентификации в системе, клиент получает токен, который используется для авторизации при последующих запросах.`
 // @Tags		Auth
 // @VendorCode	login user
