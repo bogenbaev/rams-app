@@ -107,7 +107,7 @@ func (h *Handler) GetUserByID(ctx *gin.Context) {
 
 	user, err := h.services.Authorization.GetUserByID(ctx, models.User{ID: userID})
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, err.Error())
+		ctx.JSON(http.StatusInternalServerError, gin.H{"reason": err.Error()})
 		return
 	}
 
@@ -128,7 +128,7 @@ func (h *Handler) GetUserByID(ctx *gin.Context) {
 func (h *Handler) GetListUser(ctx *gin.Context) {
 	users, err := h.services.Authorization.GetListUser(ctx)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, err.Error())
+		ctx.JSON(http.StatusInternalServerError, gin.H{"reason": err.Error()})
 		return
 	}
 
