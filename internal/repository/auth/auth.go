@@ -30,11 +30,7 @@ func (r *Repository) CreateUser(ctx context.Context, user models.User) error {
 		password,
 		created_at
 	) values (
-		:full_name,
-		:email,
-		:login,
-		:password,
-		:created_at
+		$1, $2, $3, $4, $5
 	) returning id`, models.UsersTable)
 
 	tx, err := r.db.BeginTxx(ctx, &sql.TxOptions{
@@ -45,7 +41,13 @@ func (r *Repository) CreateUser(ctx context.Context, user models.User) error {
 	}
 	defer tx.Rollback()
 
-	if err = tx.QueryRow(query, user).Scan(&user.ID); err != nil {
+	if err = tx.QueryRow(query,
+		user.FullName,
+		user.Email,
+		user.Login,
+		user.Password,
+		user.CreatedAt,
+	).Scan(&user.ID); err != nil {
 		return err
 	}
 
@@ -53,7 +55,7 @@ func (r *Repository) CreateUser(ctx context.Context, user models.User) error {
 }
 
 func (r *Repository) GetUser(ctx context.Context, username, password string) (user models.User, err error) {
-	query := fmt.Sprintf("SELECT  id, full_name, login, email, organization, is_removed FROM %s WHERE login=$1 AND password=$2", models.UsersTable)
+	query := fmt.Sprintf("SELECT  id, full_name, login, email FROM %s WHERE login=$1 AND password=$2", models.UsersTable)
 	tx, err := r.db.BeginTxx(ctx, &sql.TxOptions{
 		Isolation: sql.LevelSerializable,
 	})
@@ -104,7 +106,7 @@ func (r *Repository) GetListUser(ctx context.Context) (users []models.User, err 
 }
 
 func (r *Repository) GetUserByLogin(ctx context.Context, login string) (user models.User, err error) {
-	query := fmt.Sprintf("SELECT full_name, role, login, is_removed, organization, email  FROM %s WHERE login=$1 and is_removed=false", models.UsersTable)
+	query := fmt.Sprintf("SELECT full_name, login, email  FROM %s WHERE login=$1", models.UsersTable)
 	tx, err := r.db.BeginTxx(ctx, &sql.TxOptions{
 		Isolation: sql.LevelSerializable,
 	})

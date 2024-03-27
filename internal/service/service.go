@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"rams/internal/repository"
+	"rams/internal/service/auth"
 	"rams/internal/service/real_property"
 	"rams/pkg/models"
 )
@@ -24,7 +25,8 @@ type Authorization interface {
 
 func NewService(repos *repository.Repository) *Service {
 	return &Service{
-		RealProperty: real_property.NewRealPropertyService(repos),
+		RealProperty:  real_property.NewRealPropertyService(repos),
+		Authorization: auth.NewAuthService(repos),
 	}
 }
 

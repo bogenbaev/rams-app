@@ -2,6 +2,7 @@ package handler
 
 import (
 	"errors"
+	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
@@ -30,7 +31,7 @@ func ParseToken(accessToken string) (*TokenClaims, error) {
 	}
 
 	if !token.Valid {
-		return nil, errors.New("token don't valid")
+		return nil, errors.New("token isn't valid")
 	}
 
 	claims, ok := token.Claims.(*TokenClaims)

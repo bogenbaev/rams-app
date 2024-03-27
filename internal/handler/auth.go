@@ -13,14 +13,15 @@ type signInInput struct {
 }
 
 // @Summary	CreateNewUser
-// @Tags		user
+// @Description	`Регистрация пользователя в систему.`
+// @Tags		Auth
 // @VendorCode	create account
 // @ID			create-account
 // @Accept		json
 // @Produce	json
 // @Param		input	body		models.User	true	"account info"
 // @Success	200		{integer}	integer
-// @Router		/auth/create_user [post]
+// @Router		/auth/sign_up [post]
 func (h *Handler) SignUp(ctx *gin.Context) {
 	var input models.User
 	if err := ctx.BindJSON(&input); err != nil {
@@ -28,8 +29,13 @@ func (h *Handler) SignUp(ctx *gin.Context) {
 		return
 	}
 
+	if err := h.validate.Struct(input); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"reason": err.Error()})
+		return
+	}
+
 	if err := h.services.Authorization.CreateUser(ctx, input); err != nil {
-		ctx.JSON(http.StatusInternalServerError, err.Error())
+		ctx.JSON(http.StatusInternalServerError, gin.H{"reason": err.Error()})
 		return
 	}
 
@@ -37,12 +43,13 @@ func (h *Handler) SignUp(ctx *gin.Context) {
 }
 
 // @Summary	login user
-// @Tags		user
+// @Description	`Аутентификация пользователя в систему.`
+// @Tags		Auth
 // @VendorCode	login user
 // @ID			login
 // @Accept		json
 // @Produce	json
-// @Param		input	body		models.User	true	"account info"
+// @Param		input	body		signInInput	true	"account info"
 // @Success	200		{object}	models.AuthLoginResponse
 // @Failure	403		{object}	map[string]interface{}
 // @Failure	400,404	{object}	map[string]interface{}
@@ -53,19 +60,19 @@ func (h *Handler) SignIn(ctx *gin.Context) {
 	var input signInInput
 
 	if err := ctx.BindJSON(&input); err != nil {
-		ctx.JSON(http.StatusBadRequest, err.Error())
+		ctx.JSON(http.StatusBadRequest, gin.H{"reason": err.Error()})
 		return
 	}
 
 	token, err := h.services.Authorization.GenerateToken(ctx, input.Login, input.Password)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, err.Error())
+		ctx.JSON(http.StatusInternalServerError, gin.H{"reason": err.Error()})
 		return
 	}
 
 	account, err := h.services.Authorization.GetUserByLogin(ctx, input.Login)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, err.Error())
+		ctx.JSON(http.StatusInternalServerError, gin.H{"reason": err.Error()})
 		return
 	}
 
@@ -81,7 +88,7 @@ func (h *Handler) SignIn(ctx *gin.Context) {
 // @VendorCode	GetUserById
 // @Accept		json
 // @Produce	json
-// @Tags		user
+// @Tags		Auth
 // @Success	200
 // @Param		id		path		integer	true	"account info"
 // @Success	200		{integer}	models.User
@@ -111,7 +118,7 @@ func (h *Handler) GetUserByID(ctx *gin.Context) {
 // @VendorCode	GetAllUser
 // @Accept		json
 // @Produce	json
-// @Tags		user
+// @Tags		Auth
 // @Success	200		{array}		models.User
 // @Failure	403		{object}	map[string]interface{}
 // @Failure	400,404	{object}	map[string]interface{}

@@ -28,17 +28,17 @@ func (h *Handler) InitRoutes() *gin.Engine {
 
 	realProperty := r.Group("/real_property")
 	{
-		realProperty.POST("", h.Create)
-		realProperty.GET("", h.GetList)
-		realProperty.GET("/:id", h.GetByID)
+		realProperty.POST("", AuthMiddleware(), h.Create)
+		realProperty.GET("", AuthMiddleware(), h.GetList)
+		realProperty.GET("/:id", AuthMiddleware(), h.GetByID)
 	}
 
 	auth := r.Group("/auth")
 	{
 		auth.POST("/login", h.SignIn)
 		auth.POST("/sign_up", h.SignUp)
-		auth.GET("/users", h.GetListUser)
-		auth.GET("users/:id", h.GetUserByID)
+		auth.GET("/users", AuthMiddleware(), h.GetListUser)
+		auth.GET("/users/:id", AuthMiddleware(), h.GetUserByID)
 	}
 
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))

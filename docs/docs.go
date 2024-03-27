@@ -15,42 +15,9 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/auth/create_user": {
-            "post": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "user"
-                ],
-                "summary": "CreateNewUser",
-                "operationId": "create-account",
-                "parameters": [
-                    {
-                        "description": "account info",
-                        "name": "input",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.User"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                }
-            }
-        },
         "/auth/login": {
             "post": {
+                "description": "` + "`" + `Аутентификация пользователя в систему.` + "`" + `",
                 "consumes": [
                     "application/json"
                 ],
@@ -58,7 +25,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "user"
+                    "Auth"
                 ],
                 "summary": "login user",
                 "operationId": "login",
@@ -69,7 +36,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.User"
+                            "$ref": "#/definitions/handler.signInInput"
                         }
                     }
                 ],
@@ -118,6 +85,41 @@ const docTemplate = `{
                 }
             }
         },
+        "/auth/sign_up": {
+            "post": {
+                "description": "` + "`" + `Регистрация пользователя в систему.` + "`" + `",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "CreateNewUser",
+                "operationId": "create-account",
+                "parameters": [
+                    {
+                        "description": "account info",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.User"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                }
+            }
+        },
         "/auth/users": {
             "get": {
                 "consumes": [
@@ -127,7 +129,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "user"
+                    "Auth"
                 ],
                 "summary": "GetAllUser получение список пользователей",
                 "responses": {
@@ -187,7 +189,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "user"
+                    "Auth"
                 ],
                 "summary": "GetUser получение пользователя по идентификатору",
                 "parameters": [
@@ -445,6 +447,21 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "handler.signInInput": {
+            "type": "object",
+            "required": [
+                "login",
+                "password"
+            ],
+            "properties": {
+                "login": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
         "models.AuthLoginResponse": {
             "type": "object",
             "properties": {
@@ -499,7 +516,8 @@ const docTemplate = `{
             "type": "object",
             "required": [
                 "email",
-                "login"
+                "login",
+                "password"
             ],
             "properties": {
                 "email": {
@@ -515,6 +533,9 @@ const docTemplate = `{
                     "type": "string",
                     "maxLength": 20,
                     "minLength": 3
+                },
+                "password": {
+                    "type": "string"
                 }
             }
         }

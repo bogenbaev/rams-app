@@ -7,6 +7,6 @@ type User struct {
 	FullName  string    `json:"full_name" db:"full_name"`
 	Login     string    `json:"login" db:"login" validate:"required,min=3,max=20"`
 	Email     string    `json:"email" db:"email" validate:"required,email"`
-	Password  string    `json:"-"  db:"password" validate:"required"`
+	Password  string    `json:"password"  db:"password" validate:"required"`
 	CreatedAt time.Time `json:"-" db:"created_at"`
 }

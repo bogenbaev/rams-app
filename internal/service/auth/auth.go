@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/sha1"
 	"fmt"
+	"github.com/dgrijalva/jwt-go"
 	"rams/internal/repository"
 	"rams/pkg/models"
 	"strconv"
@@ -55,7 +56,7 @@ func (s *Service) Generate(id string, fullName string) (string, error) {
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(tokenTTL).Unix(),
 			IssuedAt:  time.Now().Unix(),
-			Issuer:    "Server",
+			Issuer:    "RAMS",
 		},
 		UId:          id,
 		UserFullName: fullName,
@@ -83,4 +84,8 @@ func (s *Service) GetUserByID(ctx context.Context, user models.User) (models.Use
 
 func (s *Service) GetUserByLogin(ctx context.Context, login string) (user models.User, err error) {
 	return s.repo.GetUserByLogin(ctx, login)
+}
+
+func (s *Service) GetUser(ctx context.Context, username, password string) (user models.User, err error) {
+	return s.repo.GetUser(ctx, username, password)
 }

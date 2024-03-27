@@ -1,5 +1,15 @@
 basePath: /
 definitions:
+  handler.signInInput:
+    properties:
+      login:
+        type: string
+      password:
+        type: string
+    required:
+    - login
+    - password
+    type: object
   models.AuthLoginResponse:
     properties:
       full_name:
@@ -47,9 +57,12 @@ definitions:
         maxLength: 20
         minLength: 3
         type: string
+      password:
+        type: string
     required:
     - email
     - login
+    - password
     type: object
 host: localhost:8080
 info:
@@ -58,32 +71,11 @@ info:
   title: RAMS-app
   version: "1.0"
 paths:
-  /auth/create_user:
-    post:
-      consumes:
-      - application/json
-      operationId: create-account
-      parameters:
-      - description: account info
-        in: body
-        name: input
-        required: true
-        schema:
-          $ref: '#/definitions/models.User'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            type: integer
-      summary: CreateNewUser
-      tags:
-      - user
   /auth/login:
     post:
       consumes:
       - application/json
+      description: '`Аутентификация пользователя в систему.`'
       operationId: login
       parameters:
       - description: account info
@@ -91,7 +83,7 @@ paths:
         name: input
         required: true
         schema:
-          $ref: '#/definitions/models.User'
+          $ref: '#/definitions/handler.signInInput'
       produces:
       - application/json
       responses:
@@ -126,7 +118,30 @@ paths:
             type: object
       summary: login user
       tags:
-      - user
+      - Auth
+  /auth/sign_up:
+    post:
+      consumes:
+      - application/json
+      description: '`Регистрация пользователя в систему.`'
+      operationId: create-account
+      parameters:
+      - description: account info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/models.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: integer
+      summary: CreateNewUser
+      tags:
+      - Auth
   /auth/users:
     get:
       consumes:
@@ -167,7 +182,7 @@ paths:
             type: object
       summary: GetAllUser получение список пользователей
       tags:
-      - user
+      - Auth
   /auth/users/:id:
     get:
       consumes:
@@ -212,7 +227,7 @@ paths:
             type: object
       summary: GetUser получение пользователя по идентификатору
       tags:
-      - user
+      - Auth
   /real_property:
     get:
       consumes:
