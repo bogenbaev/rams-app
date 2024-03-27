@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
-	dStub "github.com/golang-migrate/migrate/v4/database/stub"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/jmoiron/sqlx"
 	"log"
@@ -38,14 +37,8 @@ func NewPostgresDB(cfg Config) *sqlx.DB {
 
 	fmt.Println("Успешное подключение к базе данных!")
 
-	// Создаем экземпляр драйвера из sqlx.DB
-	instance, err := dStub.WithInstance(db.DB, &dStub.Config{})
-	if err != nil {
-		log.Fatal(err)
-	}
-
 	// Читаем миграции из указанной директории и подключаемся к локальной базе данных PostgreSQL.
-	m, err := migrate.NewWithDatabaseInstance("file:///home/nugman/rams/internal/repository/migrations", "postgres", instance)
+	m, err := migrate.New("file:///home/nugman/rams-app/internal/repository/migrations", connStr)
 	if err != nil {
 		log.Fatal(err)
 	}

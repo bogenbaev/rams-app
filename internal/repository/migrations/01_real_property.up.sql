@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS real_property (
     property_type VARCHAR(50) NOT NULL,
     address VARCHAR(100) NOT NULL,
     price INTEGER NOT NULL,
-    rooms INTEGER,
+    rooms INTEGER DEFAULT 0,
     area FLOAT,
     description TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
