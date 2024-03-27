@@ -66,7 +66,7 @@ func TestGetUserByID(t *testing.T) {
 	mock.ExpectQuery("SELECT (.+) FROM users WHERE id=?").WithArgs(1).WillReturnRows(rows)
 
 	// Вызываем функцию, которая получает данные из базы данных
-	user, err := userRepository.GetUserByID(context.Background(), 1)
+	user, err := userRepository.GetUserByID(context.Background(), models.User{ID: 1})
 
 	// Проверяем, что нет ошибок
 	if err != nil {
