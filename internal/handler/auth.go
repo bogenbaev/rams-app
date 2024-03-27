@@ -44,6 +44,7 @@ func (h *Handler) SignUp(ctx *gin.Context) {
 
 // @Summary	login user
 // @Description	`Аутентификация пользователя в систему.`
+// @Description	`После успешной аутентификации в системе, клиент получает токен, который используется для авторизации при последующих запросах.`
 // @Tags		Auth
 // @VendorCode	login user
 // @ID			login

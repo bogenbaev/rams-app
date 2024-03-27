@@ -46,7 +46,7 @@ func AuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		tokenString := c.GetHeader("Authorization")
 		if tokenString == "" {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "Authorization header is missing"})
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Access denied"})
 			c.Abort()
 			return
 		}

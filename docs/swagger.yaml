@@ -75,7 +75,9 @@ paths:
     post:
       consumes:
       - application/json
-      description: '`Аутентификация пользователя в систему.`'
+      description: |-
+        `Аутентификация пользователя в систему.`
+        `После успешной аутентификации в системе, клиент получает токен, который используется для авторизации при последующих запросах.`
       operationId: login
       parameters:
       - description: account info
