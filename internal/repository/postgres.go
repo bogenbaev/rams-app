@@ -1,14 +1,15 @@
 package repository
 
 import (
-	"embed"
+	"errors"
 	"fmt"
+	"github.com/golang-migrate/migrate/v4"
+	_ "github.com/golang-migrate/migrate/v4/database/postgres"
+	dStub "github.com/golang-migrate/migrate/v4/database/stub"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/jmoiron/sqlx"
-	_ "github.com/lib/pq"
 	"log"
 )
-
-var MigrationsFS embed.FS
 
 type Config struct {
 	Host     string
@@ -20,14 +21,10 @@ type Config struct {
 }
 
 func NewPostgresDB(cfg Config) *sqlx.DB {
-	//migrationsDir := "migrations"
+	connStr := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=%s",
+		cfg.Username, cfg.Password, cfg.Host, cfg.Port, cfg.DBName, cfg.SSLMode)
 
-	//migrator := migrator2.MustGetNewMigrator(MigrationsFS, migrationsDir)
-
-	connStr := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s",
-		cfg.Host, cfg.Port, cfg.Username, cfg.Password, cfg.DBName, cfg.SSLMode)
-
-	// Подключаемся к базе данных
+	//Подключаемся к базе данных
 	db, err := sqlx.Open("postgres", connStr)
 	if err != nil {
 		log.Fatalf("Ошибка подключения к базе данных: %v", err)
@@ -35,18 +32,30 @@ func NewPostgresDB(cfg Config) *sqlx.DB {
 	//defer db.Close()
 
 	// Проверяем, что подключение успешно установлено
-	err = db.Ping()
-	if err != nil {
+	if err = db.Ping(); err != nil {
 		log.Fatalf("Ошибка проверки подключения: %v", err)
 	}
 
 	fmt.Println("Успешное подключение к базе данных!")
 
-	//if err = migrator.ApplyMigrations(db); err != nil {
-	//	log.Fatalf("Ошибка миграции: %v", err)
-	//}
-	//
-	//fmt.Println("Применены миграции!!!!")
+	// Создаем экземпляр драйвера из sqlx.DB
+	instance, err := dStub.WithInstance(db.DB, &dStub.Config{})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Читаем миграции из указанной директории и подключаемся к локальной базе данных PostgreSQL.
+	m, err := migrate.NewWithDatabaseInstance("file:///home/nugman/rams/internal/repository/migrations", "postgres", instance)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Применяем миграции
+	if err = m.Up(); err != nil && !errors.Is(err, migrate.ErrNoChange) {
+		log.Fatal(err)
+	}
+
+	fmt.Println("Миграция успешно применена!")
 
 	return db
 }
