@@ -33,6 +33,14 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		realProperty.GET("/:id", h.GetByID)
 	}
 
+	auth := r.Group("/auth")
+	{
+		auth.POST("/login", h.SignIn)
+		auth.POST("/sign_up", h.SignUp)
+		auth.GET("/users", h.GetListUser)
+		auth.GET("users/:id", h.GetUserByID)
+	}
+
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	return r

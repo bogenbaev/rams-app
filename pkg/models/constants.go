@@ -9,4 +9,5 @@ const (
 
 const (
 	RealPropertyTable = "real_property"
+	UsersTable        = "users"
 )
